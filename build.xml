@@ -1,0 +1,96 @@
+<project name="MyProject" default="deploy_war" basedir=".">
+	<!-- set global properties for this build -->
+	<property name="webinf.dir" location="webInf"/>
+	<property name="src" location="src" />
+	<property name="build" location="build" />
+	<property name="dist" location="dist" />
+	<property name="dist.webinf" location="${dist}\WEB-INF" />
+	<property name="dist.webinf.classes" location="${dist.webinf}\classes" />
+	<property name="dist.webinf.lib" location="${dist.webinf}\lib" />
+	<property name="lib.dir" location="lib" />
+	<property name="web.dir" location="web"/>	
+	<property name="web-xml-file" value="${dist.webinf}/web.xml" />
+	<property name="war-dir" value="war"/>
+	<property name="war-file-name" value="GoogleWebExample.war"/>
+	<property name="tomcat.working.dir" value="C:\Tomcat_7\webapps"/>
+		  	
+	<path id="compile.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+		<fileset dir="${ant.library.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="clean" description="clean up">
+		<delete dir="${build}" />
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${war-dir}" includes="**/*" defaultexcludes="false" />
+		</delete>
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${dist}" includes="**/*" defaultexcludes="false" />
+		</delete>
+		<delete dir="${war-dir}"/>
+		<delete dir="${dist}"/>
+		<delete file="${tomcat.working.dir}/${war-file-name}"/>
+	</target>
+
+	<target name="init" depends="clean">
+		<!-- Create the time stamp -->
+		<tstamp />
+		<mkdir dir="${war-dir}"/>
+		<mkdir dir="${build}" />
+		<mkdir dir="${dist}"/>
+		<mkdir dir="${dist.webinf}" />
+		<mkdir dir="${dist.webinf.classes}" />
+		<mkdir dir="${dist.webinf.lib}" />
+	</target>
+
+	<target name="compile" depends="init" description="compile the source ">
+		<!-- Compile the java code from ${src} into ${build} -->
+		<javac srcdir="${src}" destdir="${build}" debug="true">
+			<classpath refid="compile.classpath" />
+		</javac>
+	</target>
+
+	<target name="dist" depends="compile" description="generate the distribution">
+		<copy todir="${dist.webinf.classes}">
+			<fileset dir="${build}">
+				<include name="**/*.class" />
+				<exclude name="**/test/**" />
+			</fileset>
+		</copy>
+		<copy todir="${dist.webinf}">
+			<fileset dir="${webinf.dir}" />
+		</copy>
+		<copy todir="${dist.webinf.lib}">
+			<fileset dir="${lib.dir}" excludes="servlet-api.jar junit.jar org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+		</copy>
+		<copy todir="${dist}">
+			<fileset dir="${web.dir}" />
+		</copy>
+		<copy file="log4j.properties" todir="${dist.webinf.classes}"/>
+	</target>
+	
+	<target name="war" depends="dist">
+			<war warfile="${war-dir}/${war-file-name}" webxml="${web-xml-file}">
+				<classes dir="${build}" />
+				<fileset dir="${dist}">
+					<!-- Need to exclude it since webxml is an attribute of the war tag above -->
+					<exclude name="WEB-INF/web.xml" />
+				</fileset>
+				<manifest>
+					<attribute name="Built-By" value="${builder}" />
+					<attribute name="Built-On" value="${build-info.current-date}" />
+					<attribute name="Built-At" value="${build-info.current-time}" />
+				</manifest>
+			</war>
+	</target>
+	
+	<target name="deploy_war" depends="war">
+		<copy todir="${tomcat.working.dir}">
+			<fileset file="${war-dir}/${war-file-name}" />
+		</copy>
+	</target>
+</project>
