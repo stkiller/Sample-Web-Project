@@ -24,7 +24,7 @@
 					name="group_id">
 					<c:forEach var="group" items="${groups}">
 						<c:choose>
-							<c:when test="${user.groupID==group.id}">
+							<c:when test="${user.group.id==group.id}">
 								<option value="${group.id }" selected="selected">${group.name}</option>
 							</c:when>
 							<c:otherwise>

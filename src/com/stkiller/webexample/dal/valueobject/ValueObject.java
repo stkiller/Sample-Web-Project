@@ -1,18 +1,18 @@
 package com.stkiller.webexample.dal.valueobject;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
+@Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class ValueObject implements Serializable, Comparable<ValueObject> {
     private static final long serialVersionUID = -2634242514176783277L;
 
     @Id()
+    @TableGenerator(name = "Identity_Gen", initialValue = 1)
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    protected Long id;
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "Identity_Gen")
+    private Long id;
 
     @Column(name = "name", nullable = false)
     protected String name;
@@ -25,7 +25,7 @@ public abstract class ValueObject implements Serializable, Comparable<ValueObjec
         this.name = name;
     }
 
-    public ValueObject(Long id, String name) {
+    protected ValueObject(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -37,14 +37,11 @@ public abstract class ValueObject implements Serializable, Comparable<ValueObjec
         return id;
     }
 
-    /**
-     * @param id the id to set
-     */
     public void setId(Long id) {
-        if (id != null && id <= 0) {
-            this.id = null;
-        } else {
+        if (0 < id) {
             this.id = id;
+        } else {
+            this.id=null;
         }
     }
 
@@ -63,52 +60,20 @@ public abstract class ValueObject implements Serializable, Comparable<ValueObjec
     }
 
     @Override
-    public String toString() {
-        return String.format("ValueObject [id=%s, name=%s]", id, name);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ValueObject)) return false;
+
+        ValueObject that = (ValueObject) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+
+        return true;
     }
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see java.lang.Object#hashCode()
-      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (int) (id ^ (id >>> 32));
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-
-    /*
-      * (non-Javadoc)
-      *
-      * @see java.lang.Object#equals(java.lang.Object)
-      */
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof ValueObject)) {
-            return false;
-        }
-        ValueObject other = (ValueObject) obj;
-        if (!id.equals(other.id)) {
-            return false;
-        }
-        if (name == null) {
-            if (other.name != null) {
-                return false;
-            }
-        } else if (!name.equals(other.name)) {
-            return false;
-        }
-        return true;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override
@@ -118,5 +83,14 @@ public abstract class ValueObject implements Serializable, Comparable<ValueObjec
         }
         return this.getId().compareTo(o.getId());
     }
+
+    @Override
+    public String toString() {
+        return "ValueObject{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
 
 }

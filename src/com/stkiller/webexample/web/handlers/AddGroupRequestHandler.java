@@ -14,8 +14,9 @@ import com.stkiller.webexample.web.entities.resolution.RedirectResolution;
 import com.stkiller.webexample.web.helper.AvailableActionType;
 import com.stkiller.webexample.web.helper.BeanUtilsHelper;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class AddGroupRequestHandler implements IRequestHandler {
 	private static final String VIEW = "/WEB-INF/view/AddGroup.jsp";
@@ -68,7 +69,7 @@ public class AddGroupRequestHandler implements IRequestHandler {
 		GroupVO group = new GroupVO();
 		try {
 			beanUtilsHelper.populateBean(group, context.getParameterMap());
-			List<RoleVO> roles = new ArrayList<RoleVO>();
+			Set<RoleVO> roles = new HashSet<RoleVO>();
 			if (context.isParameterPresent("roles_id")) {
 				for (String roleID : context.getParameterValues("roles_id")) {
 					if (roleID == null) {

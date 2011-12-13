@@ -3,7 +3,6 @@ package com.stkiller.webexample.web.listeners;
 
 import com.stkiller.webexample.bl.dataaccess.BLAccessManager;
 import com.stkiller.webexample.bl.dataaccess.IBLAccessManager;
-import com.stkiller.webexample.dal.factories.DAOFactoryType;
 import com.stkiller.webexample.web.handlers.*;
 import com.stkiller.webexample.web.helper.AvailableActionType;
 import com.stkiller.webexample.web.helper.BeanUtilsHelper;
@@ -30,11 +29,7 @@ public class InitializationListener implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent contextEvent) {
 		PropertyConfigurator.configure("log4j.properties");
-		String dbUser = contextEvent.getServletContext().getInitParameter(DB_USER);
-		String dbPass = contextEvent.getServletContext().getInitParameter(DB_PASS);
-		String dbURL = contextEvent.getServletContext().getInitParameter(DB_URL);
-		String dbType = contextEvent.getServletContext().getInitParameter(DB_TYPE);
-		IBLAccessManager accessManager = new BLAccessManager(DAOFactoryType.valueOf(dbType), dbUser, dbPass, dbURL);
+		IBLAccessManager accessManager = new BLAccessManager();
 		BeanUtilsHelper beanHelper = new BeanUtilsHelper();
 		Map<AvailableActionType, IRequestHandler> availableHandlers = new HashMap<AvailableActionType, IRequestHandler>();
 		availableHandlers.put(AvailableActionType.VIEW, new ViewAllRequestHandler(accessManager));

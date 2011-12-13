@@ -70,7 +70,8 @@
 		<copy todir="${dist}">
 			<fileset dir="${web.dir}" />
 		</copy>
-		<copy file="log4j.properties" todir="${dist.webinf.classes}"/>
+        <copy file="log4j.properties" todir="${dist.webinf.classes}"/>
+        <copy file="${src}/hibernate.cfg.xml" todir="${dist.webinf.classes}"/>
 	</target>
 	
 	<target name="war" depends="dist">

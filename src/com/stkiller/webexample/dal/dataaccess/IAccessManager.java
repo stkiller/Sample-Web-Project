@@ -55,7 +55,7 @@ public interface IAccessManager {
 
 	/**
 	 * Removes the specified {@link UserVO}
-	 * 
+	 *
 	 * @param user
 	 *            - {@link UserVO} that should be deleted
 	 * @return true if the user was successfully deleted, false otherwise

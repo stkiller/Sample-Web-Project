@@ -28,20 +28,22 @@ public class DeleteEntityRequestHandler implements IRequestHandler {
 		try {
 			if (objectType != null && id != null) {
 				if (objectType.equals("user")) {
-					UserVO user = new UserVO();
-					user.setId(new Long(id));
-					accessManager.removeUser(user);
-				}
+                    UserVO user = new UserVO(new Long(id));
+                    user.setName("");
+                    user.setLogin("");
+                    user.setPassword("");
+                    accessManager.removeUser(user);
+                }
 				if (objectType.equals("role")) {
-					RoleVO role = new RoleVO();
-					role.setId(new Long(id));
-					accessManager.removeRole(role);
-				}
+                    RoleVO role = new RoleVO(new Long(id));
+                    role.setName("");
+                    accessManager.removeRole(role);
+                }
 				if (objectType.equals("group")) {
-					GroupVO group = new GroupVO();
-					group.setId(new Long(id));
-					accessManager.removeGroup(group);
-				}
+                    GroupVO group = new GroupVO(new Long(id));
+                    group.setName("");
+                    accessManager.removeGroup(group);
+                }
 			}
 			return new RedirectResolution("index.html?action=" + AvailableActionType.VIEW);
 		} catch (DataWriteException ex) {

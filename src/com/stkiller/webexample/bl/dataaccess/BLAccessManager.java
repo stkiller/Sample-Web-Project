@@ -9,11 +9,9 @@ import com.stkiller.webexample.bl.datavalidation.interfaces.IValidator;
 import com.stkiller.webexample.bl.exceptions.DataRetrievalException;
 import com.stkiller.webexample.bl.exceptions.DataWriteException;
 import com.stkiller.webexample.bl.exceptions.ValidationException;
-import com.stkiller.webexample.dal.dataaccess.AccessManager;
 import com.stkiller.webexample.dal.dataaccess.IAccessManager;
 import com.stkiller.webexample.dal.exceptions.DBException;
-import com.stkiller.webexample.dal.exceptions.NoSuchFactoryException;
-import com.stkiller.webexample.dal.factories.DAOFactoryType;
+import com.stkiller.webexample.dal.factories.hibernate.HibernateAccessManager;
 import com.stkiller.webexample.dal.valueobject.GroupVO;
 import com.stkiller.webexample.dal.valueobject.RoleVO;
 import com.stkiller.webexample.dal.valueobject.UserVO;
@@ -28,11 +26,11 @@ public class BLAccessManager implements IBLAccessManager {
     private IValidator<GroupVO> groupValidator = new GroupValidator();
     private IValidator<RoleVO> roleValidator = new RoleValidator();
 
-    public BLAccessManager(DAOFactoryType dbType, String dbUser, String dbPass, String dbURL) {
+    public BLAccessManager() {
         try {
-            accessManager = new AccessManager(dbType, dbUser, dbPass, dbURL);
-        } catch (NoSuchFactoryException e) {
-            throw new RuntimeException(e);
+            accessManager = new HibernateAccessManager();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
         }
     }
 
